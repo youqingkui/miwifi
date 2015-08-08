@@ -1,0 +1,14 @@
+script(src="js/jquery.js")
+script.
+   hash = location.hash
+   queryVal = hash.split("#")[1]
+   $.post('/callback', {'hash':hash, 'queryVal':queryVal}, function(data){
+      if(data == 'ok'){
+        location.href = '/ok'
+      }
+     else{
+        alert(data)
+      }
+
+   })
+

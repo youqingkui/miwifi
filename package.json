@@ -1,0 +1,14 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "^1.4.1",
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "ioredis": "^1.7.3",
+    "jade": "^1.11.0",
+    "morgan": "^1.6.1",
+    "redis": "^0.12.1",
+    "request": "^2.60.0"
+  }
+}

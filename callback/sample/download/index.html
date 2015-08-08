@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script src="http://code.hs-cn.com/jquery/jquery-1.7.1.min.js"></script>
+    <script src="http://app.miwifi.com/js/router_request.js"></script>
+    <title>插件Sample-下载一个URL到路由器</title>
+</head>
+<body>
+<h1>插件Sample-下载一个URL到路由器</h1>
+<table id="device_table">
+    <tr>
+        <td>输入路由器ID</td>
+        <td>
+            <input type="text" id="deviceIdText" placeholder="路由器ID">
+        </td>
+    </tr>
+    <tr>
+        <td>输入要下载的URL</td>
+        <td>
+            <input type="text" id="urlText" placeholder="资源url">
+        </td>
+    </tr>
+    <tr>
+        <td>操作</td>
+        <td>
+            <input type="button" value="授权" id="authorizeButton">
+            <input type="button" value="下载" id="downloadButton">
+        </td>
+</table>
+</body>
+<script type="text/javascript">
+    var appId = "2882303761517367072";
+    $(document).ready(function() {
+        $("#authorizeButton").click(function(){
+            if (!routerRequest.hasAccessToken()) {
+                routerRequest.authorize(window.location.href, appId);
+            }
+        });
+
+        $("#downloadButton").click(function() {
+            var deviceId = $("#deviceIdText").val();
+            if (!deviceId) {
+                alert("请填写路由器ID");
+                return;
+            }
+            var url = $("#urlText").val();
+            if (!url) {
+                alert("请填写要下载的url");
+                return;
+            }
+            routerRequest.request({
+                path: "/api-third-party/service/datacenter/download_file",
+                type: "GET",
+                data: {
+                    deviceId: deviceId, // 这个参数只是调试时添加，上线后要去掉。
+                    url:url,
+                    appId: appId
+                },
+                success: function(data) {
+                    var response = jQuery.parseJSON(data);
+                    if (response.code != 0) {
+                        console.log(data);
+                        alert("错误：" + response.msg);
+                        return;
+                    }
+                    alert("下载url成功");
+                },
+                error: function(data) {
+                    console.log("error:", data);
+                    alert("下载url失败");
+                }
+            });
+        });
+    });
+</script>
+</html>
