@@ -11,4 +11,11 @@ exports.getToken = (cb) ->
 
     cb(null, res)
 
+exports.addDevices = (devices, cb) ->
+  redis.hmset 'miwifi_devices', devices, (err, res) ->
+    return cb(err) if err
+    cb(null, res)
+
+
+
 

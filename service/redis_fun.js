@@ -21,6 +21,15 @@
     });
   };
 
+  exports.addDevices = function(devices, cb) {
+    return redis.hmset('miwifi_devices', devices, function(err, res) {
+      if (err) {
+        return cb(err);
+      }
+      return cb(null, res);
+    });
+  };
+
 }).call(this);
 
 //# sourceMappingURL=redis_fun.js.map
