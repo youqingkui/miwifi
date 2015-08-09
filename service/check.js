@@ -38,30 +38,20 @@
             return callback(null, data);
           });
         }, function(data, callback) {
-          var devices, i, tmp, _i, _len, _ref;
+          var devices, i, mac, tmp, _i, _len, _ref;
           devices = [];
           _ref = data.list;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             i = _ref[_i];
             tmp = {};
-            tmp.ip = i.ip;
-            tmp.mac = i.mac;
-            tmp.origin_name = i.origin_name;
+            mac = 'device-' + i.mac;
+            tmp[mac] = {};
+            tmp[mac].ip = i.ip;
+            tmp[mac].origin_name = i.origin_name;
             devices.push(tmp);
           }
-          return redis.exists("miwifi_devices", function(err, res) {
-            if (err) {
-              return console.log(err);
-            }
-            console.log("res =====>", res);
-            if (!res) {
-              return addDevices(devices, function(err, res) {
-                if (err) {
-                  return console.log(err);
-                }
-              });
-            }
-          });
+          console.log(devices);
+          return addDevices(devices);
         }
       ]);
     };

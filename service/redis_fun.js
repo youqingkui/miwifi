@@ -21,12 +21,30 @@
     });
   };
 
-  exports.addDevices = function(devices, cb) {
-    return redis.hmset('miwifi_devices', devices, function(err, res) {
-      if (err) {
-        return cb(err);
+  exports.addDevices = function(devices) {
+    return devices.forEach(function(device) {
+      var key, _results;
+      _results = [];
+      for (key in device) {
+        redis.exists(key, function(err, res) {
+          if (!res) {
+            return redis.hmset(key, {
+              ip: device[key].ip,
+              origin_name: device[key].origin_name
+            }, function(err, row) {
+              return console.log(err, row);
+            });
+          } else {
+            return console.log("find", key);
+          }
+        });
+        _results.push(redis.exists('deviceSet', function(err, res) {
+          if (!res) {
+            return redis.sadd('deviceSet', key);
+          }
+        }));
       }
-      return cb(null, res);
+      return _results;
     });
   };
 

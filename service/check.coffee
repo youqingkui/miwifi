@@ -13,12 +13,14 @@ class Check
   getDevices:() ->
     self = @
     async.waterfall [
+      # 获取token
       (callback) ->
         getToken (err, token) ->
           return console.log err if err
 
           callback(null, token)
 
+      # 获取设备
       (token, callback) ->
         self.url += token.slice(7)
         console.log self.url
@@ -28,24 +30,20 @@ class Check
           console.log data
           callback(null, data)
 
+      # 记录设备信息
       (data, callback) ->
         devices = []
         for i in data.list
           tmp = {}
-          tmp.ip = i.ip
-          tmp.mac = i.mac
-          tmp.origin_name = i.origin_name
+          mac = 'device-' + i.mac
+          tmp[mac] = {}
+          tmp[mac].ip = i.ip
+          tmp[mac].origin_name = i.origin_name
           devices.push(tmp)
 
-        redis.exists "miwifi_devices", (err, res) ->
-          return console.log err if err
+        console.log devices
 
-          console.log "res =====>", res
-          if not res
-            addDevices devices, (err, res) ->
-              return console.log err if err
-
-#          cb(null, devices)
+        addDevices(devices)
 
 
 

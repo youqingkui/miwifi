@@ -11,10 +11,21 @@ exports.getToken = (cb) ->
 
     cb(null, res)
 
-exports.addDevices = (devices, cb) ->
-  redis.hmset 'miwifi_devices', devices, (err, res) ->
-    return cb(err) if err
-    cb(null, res)
+exports.addDevices = (devices) ->
+  devices.forEach (device) ->
+    for key of device
+      redis.exists key, (err, res) ->
+        if not res
+          redis.hmset key, {ip:device[key].ip, origin_name:device[key].origin_name}, (err, row) ->
+            console.log err, row
+        else
+          console.log "find", key
+
+      redis.exists 'deviceSet', (err, res) ->
+        if not res
+          redis.sadd 'deviceSet', key
+
+
 
 
 
